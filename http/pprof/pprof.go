@@ -12,5 +12,5 @@ func main() {
 			log.Println(http.ListenAndServe("localhost:8080", nil))
 		}()
 	*/
-	log.Println(http.ListenAndServe("localhost:8080", nil))
+	log.Println(http.ListenAndServe(":8080", nil))
 }
