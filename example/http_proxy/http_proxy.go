@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -56,21 +57,24 @@ func copyHeader(dst, src http.Header) {
 	}
 }
 
+var logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
+
 func main() {
 	var pemPath string
-	// flag.StringVar(&pemPath, "pem", "server.pem", "path to pem file")
+	flag.StringVar(&pemPath, "pem", "server.pem", "path to pem file")
 	var keyPath string
-	// flag.StringVar(&keyPath, "pem", "server.key", "path to key file")
+	flag.StringVar(&keyPath, "key", "server.key", "path to key file")
 	var proto string
 	flag.StringVar(&proto, "proto", "https", "Proxy protocol (http or https)")
 	flag.Parse()
 	if proto != "http" && proto != "https" {
-		log.Fatal("Protocol must be either http or https")
+		logger.Fatal("Protocol must be either http or https")
 	}
 
 	server := &http.Server{
 		Addr: ":8080",
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			logger.Print(r)
 			if r.Method == http.MethodConnect {
 				handleTunneling(w, r)
 			} else {
@@ -80,9 +84,10 @@ func main() {
 		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler)),
 	}
 
+	logger.Print("Listening on 8080...")
 	if proto == "http" {
-		log.Fatal(server.ListenAndServe())
+		logger.Fatal(server.ListenAndServe())
 	} else {
-		log.Fatal(server.ListenAndServeTLS(pemPath, keyPath))
+		logger.Fatal(server.ListenAndServeTLS(pemPath, keyPath))
 	}
 }
