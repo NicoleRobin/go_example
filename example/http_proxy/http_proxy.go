@@ -57,6 +57,15 @@ func copyHeader(dst, src http.Header) {
 	}
 }
 
+func printRequest(r *http.Request) {
+	log.Print("Method:" + r.Method)
+	log.Print("URL:" + r.URL.String())
+	log.Print("Proto:" + r.Proto)
+	for k, v := range r.Header {
+		log.Printf("%s:%s", k, v)
+	}
+}
+
 var logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
 
 func main() {
