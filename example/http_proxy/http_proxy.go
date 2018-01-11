@@ -68,13 +68,13 @@ func main() {
 	flag.StringVar(&proto, "proto", "https", "Proxy protocol (http or https)")
 	flag.Parse()
 	if proto != "http" && proto != "https" {
-		logger.Fatal("Protocol must be either http or https")
+		log.Fatal("Protocol must be either http or https")
 	}
 
 	server := &http.Server{
 		Addr: ":8080",
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			logger.Print(r)
+			log.Print(r)
 			if r.Method == http.MethodConnect {
 				handleTunneling(w, r)
 			} else {
@@ -82,12 +82,13 @@ func main() {
 			}
 		}),
 		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler)),
+		ErrorLog:     logger,
 	}
 
-	logger.Print("Listening on 8080...")
+	log.Print("Listening on 8080...")
 	if proto == "http" {
-		logger.Fatal(server.ListenAndServe())
+		log.Fatal(server.ListenAndServe())
 	} else {
-		logger.Fatal(server.ListenAndServeTLS(pemPath, keyPath))
+		log.Fatal(server.ListenAndServeTLS(pemPath, keyPath))
 	}
 }
