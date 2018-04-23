@@ -10,6 +10,7 @@ import (
 
 func main() {
 	arith := new(arith.Arith)
+	// 首先注册该对象
 	rpc.Register(arith)
 	rpc.HandleHTTP()
 	l, e := net.Listen("tcp", ":1234")
