@@ -7,7 +7,6 @@ import "io"
 func main() {
 	fmt.Println("vim-go")
 	h := sha1.New()
-	io.WriteString(h, "His money is twice tained:")
-	io.WriteString(h, " ,taint yours and 'taint mime.")
+	io.WriteString(h, "hello")
 	fmt.Printf("% X\n", h.Sum(nil))
 }
